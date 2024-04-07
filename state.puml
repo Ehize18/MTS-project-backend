@@ -1,0 +1,16 @@
+@startuml
+hide empty description
+skinparam Linetype ortho
+
+[*] --> Created : Клиент/администратор создал заказ
+Created --> Confirmed : Администратор подтвердил заказ
+Confirmed --> InProgress : Начало выполнения услуг
+InProgress --> Finished : Услуги выполнены, машину можно забирать
+Finished -> [*]
+
+Created --> Canceled
+Confirmed -right---> Canceled
+InProgress -up-> Canceled
+Canceled --> [*]
+
+@enduml
