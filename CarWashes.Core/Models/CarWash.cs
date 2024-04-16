@@ -1,6 +1,6 @@
 ﻿namespace CarWashes.Core.Models
 {
-	public class CarWash
+	public class Carwash
 	{
 		public int Id { get; }
 		public string OrgName { get; } = string.Empty;
@@ -12,7 +12,7 @@
 		public DateTimeOffset WorkTimeStart { get; }
 		public DateTimeOffset WorkTimeEnd { get; }
 
-		public CarWash(
+		public Carwash(
 			int id,
 			string orgName, string name,
 			string city, string address,

@@ -5,11 +5,13 @@
 		public int Id { get; }
 		public int UserId { get; }
 		public int PostId { get; }
-		public Status Status { get; } = Status.Created;
+
 		public string PlateNumber { get; } = string.Empty;
 		public string CarBrand { get; } = string.Empty;
 		public string CarModel { get; } = string.Empty;
 		public int CarReleaseYear { get; }
+
+		public Status Status { get; } = Status.Created;
 		public DateTime OrderTime { get; }
 		public DateTime CreatedAt { get; }
 		public DateTime? UpdatedAt { get; }
