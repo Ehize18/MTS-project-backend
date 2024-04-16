@@ -1,10 +1,12 @@
 ﻿using CarWashes.Core.Models;
 
-namespace CarWashes.DataBase.Postgres.Repositories
+namespace CarWashes.Core.Interfaces
 {
 	public interface IHumansRepository
 	{
 		Task Add(Human human);
-		Task<List<Human>> Get();
+		Task<List<Human>> GetAll();
+		Task<Human> GetById(int id);
+		Task Update(int id, string phone, string email);
 	}
 }

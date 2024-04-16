@@ -5,7 +5,7 @@
 		public int Id { get; }
 		public string LastName { get; } = string.Empty;
 		public string FirstName { get; } = string.Empty;
-		public string MiddleName { get; } = string.Empty;
+		public string? MiddleName { get; } = string.Empty;
 		public string Phone { get; } = string.Empty;
 		public DateOnly Birthday { get; }
 		public string Email { get; } = string.Empty;

@@ -1,9 +1,11 @@
-﻿using CarWashes.DataBase.Postgres.Models;
+﻿using CarWashes.Core.Interfaces;
+using CarWashes.Core.Models;
+using CarWashes.DataBase.Postgres.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarWashes.DataBase.Postgres.Repositories
 {
-	public class UsersRepository
+	public class UsersRepository : IUsersRepository
 	{
 		private readonly CarWashesDbContext _dbContext;
 		public UsersRepository(CarWashesDbContext dbContext)
@@ -11,50 +13,53 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			_dbContext = dbContext;
 		}
 
-		public async Task<List<UserEntity>> Get()
+		public async Task<List<User>> GetAll()
 		{
-			return await _dbContext.Users
+			var usersEntities = await _dbContext.Users
 				.AsNoTracking()
 				.OrderBy(x => x.Id)
 				.ToListAsync();
+			var users = usersEntities
+				.Select(x => new User(x.Id, x.HumanId, x.Role, x.Login, x.Password, x.Vk_token))
+				.ToList();
+			return users;
 		}
 
-		public async Task<List<UserEntity>> GetWithOrders()
+		public async Task<User?> GetById(int id)
 		{
-			return await _dbContext.Users
-				.AsNoTracking()
-				.Include(x => x.Orders)
-				.ToListAsync();
-		}
-
-		public async Task<UserEntity?> GetById(int id)
-		{
-			return await _dbContext.Users
+			var userEntity = await _dbContext.Users
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Id == id);
+			var user = new User(
+				userEntity.Id, userEntity.HumanId, userEntity.Role,
+				userEntity.Login, userEntity.Password, userEntity.Vk_token);
+			return user;
 		}
 
-		public async Task<List<UserEntity>> GetOnlyWithOrders()
-		{
-			return await _dbContext.Users
-				.AsNoTracking()
-				.Where(x => x.Orders.Count > 0)
-				.ToListAsync();
-		}
-
-		public async Task Add(int human_id, string role, string login, string password, string vk_token)
+		public async Task Add(User user)
 		{
 			var userEntity = new UserEntity
 			{
-				HumanId = human_id,
-				Role = role,
-				Login = login,
-				Password = password,
-				Vk_token = vk_token
+				HumanId = user.HumanId,
+				Role = user.Role,
+				Login = user.Login,
+				Password = user.Password,
+				Vk_token = user.VkToken
 			};
 
 			await _dbContext.AddAsync(userEntity);
 			await _dbContext.SaveChangesAsync();
+		}
+
+		public async Task Update(int id, string role, string login, string password, string vk_token)
+		{
+			await _dbContext.Users
+				.Where(x => x.Id == id)
+				.ExecuteUpdateAsync(s => s
+					.SetProperty(x => x.Role, x => role)
+					.SetProperty(x => x.Login, x => login)
+					.SetProperty(x => x.Password, x => password)
+					.SetProperty(x => x.Vk_token, x => vk_token));
 		}
 	}
 }

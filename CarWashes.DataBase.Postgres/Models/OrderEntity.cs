@@ -1,21 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CarWashes.Core;
 
 namespace CarWashes.DataBase.Postgres.Models
 {
-	public enum Status
-	{
-		Created,
-		Confirmed,
-		InProgress,
-		Finished,
-		Rejected,
-		Canceled
-	}
-
 	public class OrderEntity
 	{
 		public int Id { get; set; }

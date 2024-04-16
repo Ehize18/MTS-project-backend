@@ -1,4 +1,5 @@
-﻿using CarWashes.Core.Models;
+﻿using CarWashes.Core.Interfaces;
+using CarWashes.Core.Models;
 using CarWashes.DataBase.Postgres.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			_dbContext = dbContext;
 		}
 
-		public async Task<List<Human>> Get()
+		public async Task<List<Human>> GetAll()
 		{
 			var humanEntities = await _dbContext.Humans
 				.AsNoTracking()
@@ -22,6 +23,18 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				.Select(x => new Human(x.Id, x.L_Name, x.F_Name, x.M_Name, x.Phone, x.Birthday, x.Email))
 				.ToList();
 			return humans;
+		}
+
+		public async Task<Human> GetById(int id)
+		{
+			var humanEntity = await _dbContext.Humans
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == id);
+			var human = new Human(
+				humanEntity.Id,
+				humanEntity.L_Name, humanEntity.F_Name, humanEntity.M_Name,
+				humanEntity.Phone, humanEntity.Birthday, humanEntity.Email);
+			return human;
 		}
 
 		public async Task Add(Human human)
@@ -38,6 +51,15 @@ namespace CarWashes.DataBase.Postgres.Repositories
 
 			await _dbContext.Humans.AddAsync(humanEntity);
 			await _dbContext.SaveChangesAsync();
+		}
+
+		public async Task Update(int id, string phone, string email)
+		{
+			await _dbContext.Humans
+				.Where(x => x.Id == id)
+				.ExecuteUpdateAsync(s => s
+					.SetProperty(x => x.Phone, x => phone)
+					.SetProperty(x => x.Email, x => email));
 		}
 	}
 }
