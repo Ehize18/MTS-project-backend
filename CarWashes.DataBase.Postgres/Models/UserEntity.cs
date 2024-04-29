@@ -3,7 +3,7 @@
 	public class UserEntity
 	{
 		public int Id { get; set; }
-		public int HumanId { get; set; }
+		public int? HumanId { get; set; }
 		public HumanEntity? Human { get; set; }
 		public List<OrderEntity> Orders { get; set; } = [];
 		public List<CarwashEntity> Carwashes { get; set; } = [];

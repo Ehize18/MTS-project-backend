@@ -2,7 +2,7 @@
 {
 	public class Human
 	{
-		public int Id { get; }
+		public int? Id { get; }
 		public string LastName { get; } = string.Empty;
 		public string FirstName { get; } = string.Empty;
 		public string? MiddleName { get; } = string.Empty;
@@ -11,7 +11,7 @@
 		public string Email { get; } = string.Empty;
 
 		public Human(
-			int id,
+			int? id,
 			string lastname, string firstname, string middlename,
 			string phone,
 			DateOnly birthday,

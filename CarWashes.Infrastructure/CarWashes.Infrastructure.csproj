@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CarWashes.Core\CarWashes.Core.csproj" />
-    <ProjectReference Include="..\CarWashes.DataBase.Postgres\CarWashes.DataBase.Postgres.csproj" />
   </ItemGroup>
 
 </Project>

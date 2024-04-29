@@ -25,11 +25,26 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return humans;
 		}
 
-		public async Task<Human> GetById(int id)
+		public async Task<Human> GetByUserId(int id)
+		{
+			var userEntity = await _dbContext.Users
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == id);
+			var humanEntity = await _dbContext.Humans
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == userEntity.HumanId);
+			var human = new Human(
+				humanEntity.Id,
+				humanEntity.L_Name, humanEntity.F_Name, humanEntity.M_Name,
+				humanEntity.Phone, humanEntity.Birthday, humanEntity.Email);
+			return human;
+		}
+
+		public async Task<Human> GetByPhone(string phone)
 		{
 			var humanEntity = await _dbContext.Humans
 				.AsNoTracking()
-				.FirstOrDefaultAsync(x => x.Id == id);
+				.FirstOrDefaultAsync(x => x.Phone == phone);
 			var human = new Human(
 				humanEntity.Id,
 				humanEntity.L_Name, humanEntity.F_Name, humanEntity.M_Name,
@@ -49,6 +64,30 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				Email = human.Email
 			};
 
+			await _dbContext.Humans.AddAsync(humanEntity);
+			await _dbContext.SaveChangesAsync();
+		}
+
+		public async Task AddWithUser(Human human, User user)
+		{
+			var humanEntity = new HumanEntity
+			{
+				L_Name = human.LastName,
+				F_Name = human.FirstName,
+				M_Name = human.MiddleName,
+				Birthday = human.Birthday,
+				Phone = human.Phone,
+				Email = human.Email
+			};
+			var userEntity = new UserEntity
+			{
+				Role = user.Role,
+				Login = user.Login,
+				Password = user.Password,
+				Vk_token = user.VkToken
+			};
+
+			humanEntity.Users.Add(userEntity);
 			await _dbContext.Humans.AddAsync(humanEntity);
 			await _dbContext.SaveChangesAsync();
 		}

@@ -36,6 +36,17 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return user;
 		}
 
+		public async Task<User?> GetByLogin(string login)
+		{
+			var userEntity = await _dbContext.Users
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Login == login);
+			var user = new User(
+				userEntity.Id, userEntity.HumanId, userEntity.Role,
+				userEntity.Login, userEntity.Password, userEntity.Vk_token);
+			return user;
+		}
+
 		public async Task Add(User user)
 		{
 			var userEntity = new UserEntity

@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CarWashes.Application\CarWashes.Application.csproj" />
     <ProjectReference Include="..\CarWashes.DataBase.Postgres\CarWashes.DataBase.Postgres.csproj" />
+    <ProjectReference Include="..\CarWashes.Infrastructure\CarWashes.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
