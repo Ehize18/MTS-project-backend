@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWashes.DataBase.Postgres.Migrations
 {
     /// <inheritdoc />
-    public partial class initial_migration : Migration
+    public partial class initmig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,7 +56,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CarWashId = table.Column<int>(type: "integer", nullable: true),
+                    CarWashId = table.Column<int>(type: "integer", nullable: false),
                     InternalNumber = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -66,7 +66,8 @@ namespace CarWashes.DataBase.Postgres.Migrations
                         name: "FK_Posts_Carwashes_CarWashId",
                         column: x => x.CarWashId,
                         principalTable: "Carwashes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -247,8 +248,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Users_HumanId",
                 table: "Users",
-                column: "HumanId",
-                unique: true);
+                column: "HumanId");
         }
 
         /// <inheritdoc />

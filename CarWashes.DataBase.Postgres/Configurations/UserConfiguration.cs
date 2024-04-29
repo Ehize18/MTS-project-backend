@@ -13,8 +13,7 @@ namespace CarWashes.DataBase.Postgres.Configurations
 
 			builder
 				.HasOne(x => x.Human)
-				.WithOne(x => x.User)
-				.HasForeignKey<UserEntity>(x => x.HumanId);
+				.WithMany(x => x.Users);
 
 			builder
 				.HasMany(x => x.Orders)

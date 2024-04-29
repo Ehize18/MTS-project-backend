@@ -3,7 +3,7 @@
 	public class HumanEntity
 	{
 		public int Id { get; set; }
-		public UserEntity? User { get; set; }
+		public List<UserEntity> Users { get; set; } = [];
 
 		public string L_Name { get; set; } = string.Empty;
 		public string F_Name { get; set; } = string.Empty;

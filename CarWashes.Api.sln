@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarWashes.Api", "CarWashes.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarWashes.Core", "CarWashes.Core\CarWashes.Core.csproj", "{502DAA42-AEDD-4790-9B38-6055CCFE78D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarWashes.DataBase.Postgres", "CarWashes.DataBase.Postgres\CarWashes.DataBase.Postgres.csproj", "{306DE343-12A3-4D33-92C7-DCDB1F0A9BE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarWashes.DataBase.Postgres", "CarWashes.DataBase.Postgres\CarWashes.DataBase.Postgres.csproj", "{306DE343-12A3-4D33-92C7-DCDB1F0A9BE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

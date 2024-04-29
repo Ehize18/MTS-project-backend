@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWashes.DataBase.Postgres.Migrations
 {
     [DbContext(typeof(CarWashesDbContext))]
-    [Migration("20240415112438_initial_migration")]
-    partial class initial_migration
+    [Migration("20240429091111_initmig")]
+    partial class initmig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,7 +185,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CarWashId")
+                    b.Property<int>("CarWashId")
                         .HasColumnType("integer");
 
                     b.Property<int>("InternalNumber")
@@ -256,8 +256,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HumanId")
-                        .IsUnique();
+                    b.HasIndex("HumanId");
 
                     b.ToTable("Users");
                 });
@@ -326,7 +325,9 @@ namespace CarWashes.DataBase.Postgres.Migrations
                 {
                     b.HasOne("CarWashes.DataBase.Postgres.Models.CarwashEntity", "CarWash")
                         .WithMany("Posts")
-                        .HasForeignKey("CarWashId");
+                        .HasForeignKey("CarWashId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CarWash");
                 });
@@ -345,8 +346,8 @@ namespace CarWashes.DataBase.Postgres.Migrations
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.UserEntity", b =>
                 {
                     b.HasOne("CarWashes.DataBase.Postgres.Models.HumanEntity", "Human")
-                        .WithOne("User")
-                        .HasForeignKey("CarWashes.DataBase.Postgres.Models.UserEntity", "HumanId")
+                        .WithMany("Users")
+                        .HasForeignKey("HumanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -392,7 +393,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.HumanEntity", b =>
                 {
-                    b.Navigation("User");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.OrderEntity", b =>
