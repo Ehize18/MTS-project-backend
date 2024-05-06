@@ -41,6 +41,21 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return Result.Success<User>(user);
 		}
 
+		public async Task<Result<User>> GetAdminByHumanId(int humanId)
+		{
+			var userEntity = await _dbContext.Users
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => (x.HumanId == humanId) & (x.Role == "admin"));
+			if (userEntity == null)
+			{
+				return Result.Failure<User>("Сотрудник не найден");
+			}
+			var user = new User(
+				userEntity.Id, userEntity.HumanId, userEntity.Role,
+				userEntity.Login, userEntity.Password, userEntity.Vk_token);
+			return Result.Success<User>(user);
+		}
+
 		public async Task<Result<User>> GetByLogin(string login)
 		{
 			var userEntity = await _dbContext.Users
@@ -56,7 +71,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return Result.Success<User>(user);
 		}
 
-		public async Task Add(User user)
+		public async Task<Result> Add(User user)
 		{
 			var userEntity = new UserEntity
 			{
@@ -66,9 +81,17 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				Password = user.Password,
 				Vk_token = user.VkToken
 			};
-
-			await _dbContext.AddAsync(userEntity);
-			await _dbContext.SaveChangesAsync();
+			try
+			{
+				await _dbContext.AddAsync(userEntity);
+				await _dbContext.SaveChangesAsync();
+				return Result.Success();
+			}
+			catch
+			{
+				return Result.Failure("Пользователь с такими данными уже существует");
+			}
+				
 		}
 
 		public async Task Update(int id, string role, string login, string password, string vk_token)

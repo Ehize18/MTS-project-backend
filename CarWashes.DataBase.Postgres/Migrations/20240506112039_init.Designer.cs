@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWashes.DataBase.Postgres.Migrations
 {
     [DbContext(typeof(CarWashesDbContext))]
-    [Migration("20240429091111_initmig")]
-    partial class initmig
+    [Migration("20240506112039_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,11 +41,11 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.CarwashEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -74,11 +74,11 @@ namespace CarWashes.DataBase.Postgres.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("character varying(11)");
 
-                    b.Property<DateTimeOffset>("WorkTimeEnd")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeOnly>("WorkTimeEnd")
+                        .HasColumnType("time without time zone");
 
-                    b.Property<DateTimeOffset>("WorkTimeStart")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeOnly>("WorkTimeStart")
+                        .HasColumnType("time without time zone");
 
                     b.HasKey("Id");
 
@@ -120,6 +120,9 @@ namespace CarWashes.DataBase.Postgres.Migrations
                         .HasColumnType("character varying(11)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email", "Phone")
+                        .IsUnique();
 
                     b.ToTable("Humans");
                 });
@@ -235,7 +238,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("HumanId")
+                    b.Property<int?>("HumanId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Login")
@@ -257,6 +260,9 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HumanId");
+
+                    b.HasIndex("Login")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -347,9 +353,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                 {
                     b.HasOne("CarWashes.DataBase.Postgres.Models.HumanEntity", "Human")
                         .WithMany("Users")
-                        .HasForeignKey("HumanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HumanId");
 
                     b.Navigation("Human");
                 });

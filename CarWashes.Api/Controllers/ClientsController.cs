@@ -34,7 +34,11 @@ namespace CarWashes.Api.Controllers
 				"client",
 				Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password),
 				null);
-			await _humansService.AddHumanWithUser(human, user);
+			var registerResult = await _humansService.AddHumanWithUser(human, user);
+			if (registerResult.IsFailure)
+			{
+				return BadRequest(registerResult.Error);
+			}
 			return Ok();
 		}
 
@@ -44,7 +48,7 @@ namespace CarWashes.Api.Controllers
 		{
 			var token = HttpContext.Request.Cookies["milk-cookies"];
 			var id = _jwtProvider.GetId(token);
-			var human = await _humansService.GetHumanByJwtToken(id);
+			var human = await _humansService.GetHumanById(id);
 			var respone = new HumanResponse(
 				human.LastName, human.FirstName, human.MiddleName,
 				human.Birthday, human.Phone, human.Email);

@@ -1,10 +1,11 @@
 ﻿using CarWashes.Core.Models;
 using CarWashes.DataBase.Postgres.Models;
 using Microsoft.EntityFrameworkCore;
+using CarWashes.Core.Interfaces;
 
 namespace CarWashes.DataBase.Postgres.Repositories
 {
-	public class CarwashesRepository
+	public class CarwashesRepository : ICarwashesRepository
 	{
 		private readonly CarWashesDbContext _dbContext;
 		public CarwashesRepository(CarWashesDbContext dbContext)
@@ -43,7 +44,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return carwash;
 		}
 
-		public async Task Add(Carwash carwash)
+		public async Task Add(Carwash carwash, User user)
 		{
 			var carwashEntity = new CarwashEntity
 			{
@@ -57,13 +58,20 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				WorkTimeStart = carwash.WorkTimeStart,
 				WorkTimeEnd = carwash.WorkTimeEnd
 			};
+			var userEntity = await _dbContext.Users
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == user.Id);
+			userEntity.Carwashes.Add(carwashEntity);
+			_dbContext.Users.Attach(userEntity);
+			_dbContext.Users.Update(userEntity);
+			carwashEntity.Staff.Add(userEntity);
 			await _dbContext.Carwashes.AddAsync(carwashEntity);
 			await _dbContext.SaveChangesAsync();
 		}
 
 		public async Task Update(int id,
 			string phone, string email,
-			DateTimeOffset workTimeStart, DateTimeOffset workTimeEnd)
+			TimeOnly workTimeStart, TimeOnly workTimeEnd)
 		{
 			await _dbContext.Carwashes
 				.Where(x => x.Id == id)
@@ -72,6 +80,20 @@ namespace CarWashes.DataBase.Postgres.Repositories
 					.SetProperty(x => x.Email, x => email)
 					.SetProperty(x => x.WorkTimeStart, x => workTimeStart)
 					.SetProperty(x => x.WorkTimeEnd, x => workTimeEnd));
+		}
+
+		public async Task AddStaff(Carwash carwash, User user)
+		{
+			var carwashEntity = await _dbContext.Carwashes
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == carwash.Id);
+			var userEntity = await _dbContext.Users
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == user.Id);
+
+			carwashEntity.Staff.Add(userEntity);
+			_dbContext.Carwashes.Update(carwashEntity);
+			await _dbContext.SaveChangesAsync();
 		}
 	}
 }

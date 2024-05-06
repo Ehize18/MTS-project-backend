@@ -74,7 +74,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			await _dbContext.SaveChangesAsync();
 		}
 
-		public async Task AddWithUser(Human human, User user)
+		public async Task<Result> AddWithUser(Human human, User user)
 		{
 			var humanEntity = new HumanEntity
 			{
@@ -94,8 +94,16 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			};
 
 			humanEntity.Users.Add(userEntity);
-			await _dbContext.Humans.AddAsync(humanEntity);
-			await _dbContext.SaveChangesAsync();
+			try
+			{
+				await _dbContext.Humans.AddAsync(humanEntity);
+				await _dbContext.SaveChangesAsync();
+				return Result.Success();
+			}
+			catch
+			{
+				return Result.Failure("Пользователь с такими данными уже существует");
+			}
 		}
 
 		public async Task Update(int id, string phone, string email)

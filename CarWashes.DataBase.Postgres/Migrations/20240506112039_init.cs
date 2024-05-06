@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWashes.DataBase.Postgres.Migrations
 {
     /// <inheritdoc />
-    public partial class initmig : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,8 +24,8 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     Address = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     Phone = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    WorkTimeStart = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    WorkTimeEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    WorkTimeStart = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    WorkTimeEnd = table.Column<TimeOnly>(type: "time without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,7 +98,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HumanId = table.Column<int>(type: "integer", nullable: false),
+                    HumanId = table.Column<int>(type: "integer", nullable: true),
                     Role = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
                     Login = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Password = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -111,8 +111,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                         name: "FK_Users_Humans_HumanId",
                         column: x => x.HumanId,
                         principalTable: "Humans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -221,6 +220,12 @@ namespace CarWashes.DataBase.Postgres.Migrations
                 column: "StaffId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Humans_Email_Phone",
+                table: "Humans",
+                columns: new[] { "Email", "Phone" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderEntityServiceEntity_ServicesId",
                 table: "OrderEntityServiceEntity",
                 column: "ServicesId");
@@ -249,6 +254,12 @@ namespace CarWashes.DataBase.Postgres.Migrations
                 name: "IX_Users_HumanId",
                 table: "Users",
                 column: "HumanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Login",
+                table: "Users",
+                column: "Login",
+                unique: true);
         }
 
         /// <inheritdoc />

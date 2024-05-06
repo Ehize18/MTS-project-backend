@@ -30,6 +30,8 @@ builder.Services.AddScoped<IHumansService, HumansService>();
 builder.Services.AddScoped<IHumansRepository, HumansRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<ICarwashesService, CarwashesService>();
+builder.Services.AddScoped<ICarwashesRepository, CarwashesRepository>();
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

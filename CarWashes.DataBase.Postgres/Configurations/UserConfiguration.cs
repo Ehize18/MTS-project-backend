@@ -22,6 +22,8 @@ namespace CarWashes.DataBase.Postgres.Configurations
 			builder.Property(x => x.Role).HasMaxLength(6);
 			builder.Property(x => x.Login).HasMaxLength(256);
 			builder.Property(x => x.Password).HasMaxLength(256);
+
+			builder.HasIndex(x => x.Login).IsUnique();
 		}
 	}
 }

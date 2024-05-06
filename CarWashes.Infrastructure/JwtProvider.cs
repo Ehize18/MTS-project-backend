@@ -38,5 +38,13 @@ namespace CarWashes.Infrastructure
 			var id = decoddedToken.Claims.First(c => c.Type == "userId").Value;
 			return int.Parse(id);
 		}
+
+		public string GetRole(string token)
+		{
+			var jsonToken = new JwtSecurityTokenHandler().ReadToken(token);
+			var decoddedToken = jsonToken as JwtSecurityToken;
+			var role = decoddedToken.Claims.First(c => c.Type == "role").Value;
+			return role;
+		}
 	}
 }

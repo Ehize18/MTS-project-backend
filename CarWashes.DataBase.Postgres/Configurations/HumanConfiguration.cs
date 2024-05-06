@@ -20,6 +20,8 @@ namespace CarWashes.DataBase.Postgres.Configurations
 			builder.Property(x => x.F_Name).HasMaxLength(30);
 			builder.Property(x => x.M_Name).HasMaxLength(30);
 			builder.Property(x => x.Phone).HasMaxLength(11);
+
+			builder.HasIndex(x => new {x.Email, x.Phone}).IsUnique();
 		}
 	}
 }

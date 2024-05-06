@@ -6,5 +6,6 @@ namespace CarWashes.Core.Interfaces
 	{
 		string GenerateToken(User user);
 		int GetId(string token);
+		string GetRole(string token);
 	}
 }

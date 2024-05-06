@@ -2,6 +2,7 @@
 using CarWashes.Api.Contracts.Admins;
 using CarWashes.Core.Interfaces;
 using CarWashes.Core.Models;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,7 @@ namespace CarWashes.Api.Controllers
 		{
 			Human human;
 			User user;
+			Result registerResult;
 			if (request.haveClientAccount)
 			{
 				var result = await _humansService.GetHumanByPhone(request.phone);
@@ -41,7 +43,11 @@ namespace CarWashes.Api.Controllers
 				"admin",
 				Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password),
 				null);
-				await _usersService.AddUser(user);
+				registerResult = await _usersService.AddUser(user);
+				if (registerResult.IsFailure)
+				{
+					return BadRequest(registerResult.Error);
+				}
 				return Ok();
 			}
 			human = new Human(
@@ -53,7 +59,11 @@ namespace CarWashes.Api.Controllers
 				"admin",
 				Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password),
 				null);
-			await _humansService.AddHumanWithUser(human, user);
+			registerResult = await _humansService.AddHumanWithUser(human, user);
+			if (registerResult.IsFailure)
+			{
+				return BadRequest(registerResult.Error);
+			}
 			return Ok();
 		}
 
@@ -79,7 +89,7 @@ namespace CarWashes.Api.Controllers
 		{
 			var token = HttpContext.Request.Cookies["choco-cookies"];
 			var id = _jwtProvider.GetId(token);
-			var human = await _humansService.GetHumanByJwtToken(id);
+			var human = await _humansService.GetHumanById(id);
 			var respone = new HumanResponse(
 				human.LastName, human.FirstName, human.MiddleName,
 				human.Birthday, human.Phone, human.Email);

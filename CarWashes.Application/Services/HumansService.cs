@@ -18,12 +18,12 @@ namespace CarWashes.Application.Services
 			await _humansRepository.Add(human);
 		}
 
-		public async Task AddHumanWithUser(Human human, User user)
+		public async Task<Result> AddHumanWithUser(Human human, User user)
 		{
-			await _humansRepository.AddWithUser(human, user);
+			return await _humansRepository.AddWithUser(human, user);
 		}
 
-		public async Task<Human> GetHumanByJwtToken(int id)
+		public async Task<Human> GetHumanById(int id)
 		{
 			return await _humansRepository.GetByUserId(id);
 		}

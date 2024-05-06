@@ -15,9 +15,9 @@ namespace CarWashes.Application.Services
 			_jwtProvider = jwtProvider;
 		}
 
-		public async Task AddUser(User user)
+		public async Task<Result> AddUser(User user)
 		{
-			await _usersRepository.Add(user);
+			return await _usersRepository.Add(user);
 		}
 
 		public async Task<Result<string>> Login(string login, string password)
@@ -39,6 +39,23 @@ namespace CarWashes.Application.Services
 			var token = _jwtProvider.GenerateToken(user);
 
 			return Result.Success<string>(token);
+		}
+
+		public async Task<Result<User>> GetUserById(int id)
+		{
+			var result = await _usersRepository.GetById(id);
+			if (result.IsFailure)
+			{
+				return Result.Failure<User>("Пользователь не найден");
+			}
+			var user = result.Value;
+			return Result.Success<User>(user);
+		}
+
+		public async Task<Result<User>> GetAdminByHumanId(int id)
+		{
+			var result = await _usersRepository.GetAdminByHumanId(id);
+			return result;
 		}
 	}
 }
