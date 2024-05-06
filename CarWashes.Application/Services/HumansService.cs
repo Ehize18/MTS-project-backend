@@ -1,5 +1,6 @@
 ﻿using CarWashes.Core.Interfaces;
 using CarWashes.Core.Models;
+using CSharpFunctionalExtensions;
 
 namespace CarWashes.Application.Services
 {
@@ -27,7 +28,7 @@ namespace CarWashes.Application.Services
 			return await _humansRepository.GetByUserId(id);
 		}
 
-		public async Task<Human> GetHumanByPhone(string phone)
+		public async Task<Result<Human>> GetHumanByPhone(string phone)
 		{
 			return await _humansRepository.GetByPhone(phone);
 		}

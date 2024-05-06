@@ -1,4 +1,5 @@
 ﻿using CarWashes.Core.Models;
+using CSharpFunctionalExtensions;
 
 namespace CarWashes.Core.Interfaces
 {
@@ -7,6 +8,6 @@ namespace CarWashes.Core.Interfaces
 		Task AddUser(Human human);
 		Task AddHumanWithUser(Human human, User user);
 		Task<Human> GetHumanByJwtToken(int id);
-		Task<Human> GetHumanByPhone(string phone);
+		Task<Result<Human>> GetHumanByPhone(string phone);
 	}
 }

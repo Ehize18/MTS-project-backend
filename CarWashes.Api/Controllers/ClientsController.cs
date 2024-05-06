@@ -21,7 +21,7 @@ namespace CarWashes.Api.Controllers
 			_humansService = humansService;
 			_jwtProvider = jwtProvider;
 		}
-
+		[Route("register")]
 		[HttpPost]
 		public async Task<ActionResult> AddUser([FromBody] ClientsRegisterRequest request)
 		{
@@ -55,7 +55,12 @@ namespace CarWashes.Api.Controllers
 		[HttpPost]
 		public async Task<ActionResult> Login(ClientsLoginRequest request)
 		{
-			var token = await _usersService.Login(Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password));
+			var result = await _usersService.Login(Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password));
+			if (result.IsFailure)
+			{
+				return BadRequest(result.Error);
+			}
+			var token = result.Value;
 
 			HttpContext.Response.Cookies.Append("milk-cookies", token);
 

@@ -1,31 +1,41 @@
 ﻿using CarWashes.Api.Contracts;
+using CarWashes.Api.Contracts.Admins;
 using CarWashes.Core.Interfaces;
 using CarWashes.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CarWashes.Api.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("[controller]")]
 	public class AdminsController : ControllerBase
 	{
 		private readonly IUsersService _usersService;
 		private readonly IHumansService _humansService;
+		private readonly IJwtProvider _jwtProvider;
 
-		public AdminsController(IUsersService usersService, IHumansService humansService)
+		public AdminsController(IUsersService usersService, IHumansService humansService, IJwtProvider jwtProvider)
 		{
 			_usersService = usersService;
 			_humansService = humansService;
+			_jwtProvider = jwtProvider;
 		}
-
+		[Route("register")]
 		[HttpPost]
-		public async Task<ActionResult> AddUser([FromBody] AdminsRequest request)
+		public async Task<ActionResult> AddUser([FromBody] AdminsRegisterRequest request)
 		{
 			Human human;
 			User user;
-			if (request.haveClientAccoint)
+			if (request.haveClientAccount)
 			{
-				human = await _humansService.GetHumanByPhone(request.phone);
+				var result = await _humansService.GetHumanByPhone(request.phone);
+				if (result.IsFailure) 
+				{
+					return NotFound("Пользователь с таким номером не найден");
+				}
+				human = result.Value;
 				user = new User(
 				null, human.Id,
 				"admin",
@@ -47,9 +57,28 @@ namespace CarWashes.Api.Controllers
 			return Ok();
 		}
 
-		[HttpGet("{id}")]
-		public async Task<ActionResult<HumanResponse>> GetHumanByID(int id)
+		[Route("login")]
+		[HttpPost]
+		public async Task<ActionResult> Login(AdminsLoginRequest request)
 		{
+			var result = await _usersService.Login(Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password));
+			if (result.IsFailure)
+			{
+				return BadRequest(result.Error);
+			}
+			var token = result.Value;
+
+			HttpContext.Response.Cookies.Append("choco-cookies", token);
+
+			return Ok(token);
+		}
+
+		[Authorize]
+		[HttpGet]
+		public async Task<ActionResult<HumanResponse>> GetHumanByID()
+		{
+			var token = HttpContext.Request.Cookies["choco-cookies"];
+			var id = _jwtProvider.GetId(token);
 			var human = await _humansService.GetHumanByJwtToken(id);
 			var respone = new HumanResponse(
 				human.LastName, human.FirstName, human.MiddleName,

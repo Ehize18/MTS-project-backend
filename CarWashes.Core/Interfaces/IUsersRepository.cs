@@ -1,4 +1,5 @@
 ﻿using CarWashes.Core.Models;
+using CSharpFunctionalExtensions;
 
 namespace CarWashes.Core.Interfaces
 {
@@ -6,8 +7,8 @@ namespace CarWashes.Core.Interfaces
 	{
 		Task Add(User user);
 		Task<List<User>> GetAll();
-		Task<User?> GetById(int id);
-		Task<User?> GetByLogin(string login);
+		Task<Result<User>> GetById(int id);
+		Task<Result<User>> GetByLogin(string login);
 		Task Update(int id, string role, string login, string password, string vk_token);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using CarWashes.Core.Models;
+using CSharpFunctionalExtensions;
 
 namespace CarWashes.Core.Interfaces
 {
@@ -8,7 +9,7 @@ namespace CarWashes.Core.Interfaces
 		Task AddWithUser(Human human, User user);
 		Task<List<Human>> GetAll();
 		Task<Human> GetByUserId(int id);
-		Task<Human> GetByPhone(string phone);
+		Task<Result<Human>> GetByPhone(string phone);
 		Task Update(int id, string phone, string email);
 	}
 }

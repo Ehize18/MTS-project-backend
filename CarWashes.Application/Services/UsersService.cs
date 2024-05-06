@@ -1,5 +1,6 @@
 ﻿using CarWashes.Core.Interfaces;
 using CarWashes.Core.Models;
+using CSharpFunctionalExtensions;
 
 namespace CarWashes.Application.Services
 {
@@ -19,20 +20,25 @@ namespace CarWashes.Application.Services
 			await _usersRepository.Add(user);
 		}
 
-		public async Task<string> Login(string login, string password)
+		public async Task<Result<string>> Login(string login, string password)
 		{
-			var user = await _usersRepository.GetByLogin(login);
+			var result = await _usersRepository.GetByLogin(login);
+			if (result.IsFailure)
+			{
+				return Result.Failure<string>("Не удалось войти");
+			}
+			var user = result.Value;
 
 			var check = user.Password == password;
 
 			if (!check)
 			{
-				throw new Exception("Fail");
+				return Result.Failure<string>("Не удалось войти");
 			}
 
 			var token = _jwtProvider.GenerateToken(user);
 
-			return token;
+			return Result.Success<string>(token);
 		}
 	}
 }

@@ -1,7 +1,9 @@
 ﻿using CarWashes.Core.Interfaces;
 using CarWashes.Core.Models;
 using CarWashes.DataBase.Postgres.Models;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace CarWashes.DataBase.Postgres.Repositories
 {
@@ -40,16 +42,20 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return human;
 		}
 
-		public async Task<Human> GetByPhone(string phone)
+		public async Task<Result<Human>> GetByPhone(string phone)
 		{
 			var humanEntity = await _dbContext.Humans
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Phone == phone);
+			if (humanEntity == null)
+			{
+				return Result.Failure<Human>("Пользователь не найден");
+			}
 			var human = new Human(
 				humanEntity.Id,
 				humanEntity.L_Name, humanEntity.F_Name, humanEntity.M_Name,
 				humanEntity.Phone, humanEntity.Birthday, humanEntity.Email);
-			return human;
+			return Result.Success<Human>(human);
 		}
 
 		public async Task Add(Human human)

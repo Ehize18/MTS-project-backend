@@ -1,6 +1,7 @@
 ﻿using CarWashes.Core.Interfaces;
 using CarWashes.Core.Models;
 using CarWashes.DataBase.Postgres.Models;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarWashes.DataBase.Postgres.Repositories
@@ -25,26 +26,34 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return users;
 		}
 
-		public async Task<User?> GetById(int id)
+		public async Task<Result<User>> GetById(int id)
 		{
 			var userEntity = await _dbContext.Users
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Id == id);
+			if (userEntity == null)
+			{
+				return Result.Failure<User>("Пользователь не найден");
+			}
 			var user = new User(
 				userEntity.Id, userEntity.HumanId, userEntity.Role,
 				userEntity.Login, userEntity.Password, userEntity.Vk_token);
-			return user;
+			return Result.Success<User>(user);
 		}
 
-		public async Task<User?> GetByLogin(string login)
+		public async Task<Result<User>> GetByLogin(string login)
 		{
 			var userEntity = await _dbContext.Users
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Login == login);
+			if (userEntity == null)
+			{
+				return Result.Failure<User>("Пользователь не найден");
+			}
 			var user = new User(
 				userEntity.Id, userEntity.HumanId, userEntity.Role,
 				userEntity.Login, userEntity.Password, userEntity.Vk_token);
-			return user;
+			return Result.Success<User>(user);
 		}
 
 		public async Task Add(User user)
