@@ -5,7 +5,7 @@ using CarWashes.Core.Models;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using CarWashes.Infrastructure;
 
 namespace CarWashes.Api.Controllers
 {
@@ -41,7 +41,7 @@ namespace CarWashes.Api.Controllers
 				user = new User(
 				null, human.Id,
 				"admin",
-				Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password),
+				Helper.SHA256Hash(request.login), Helper.SHA256Hash(request.password),
 				null);
 				registerResult = await _usersService.AddUser(user);
 				if (registerResult.IsFailure)
@@ -57,7 +57,7 @@ namespace CarWashes.Api.Controllers
 			user = new User(
 				null, null,
 				"admin",
-				Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password),
+				Helper.SHA256Hash(request.login), Helper.SHA256Hash(request.password),
 				null);
 			registerResult = await _humansService.AddHumanWithUser(human, user);
 			if (registerResult.IsFailure)
@@ -71,14 +71,14 @@ namespace CarWashes.Api.Controllers
 		[HttpPost]
 		public async Task<ActionResult> Login(AdminsLoginRequest request)
 		{
-			var result = await _usersService.Login(Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password));
+			var result = await _usersService.Login(Helper.SHA256Hash(request.login), Helper.SHA256Hash(request.password));
 			if (result.IsFailure)
 			{
 				return BadRequest(result.Error);
 			}
 			var token = result.Value;
 
-			HttpContext.Response.Cookies.Append("choco-cookies", token);
+			HttpContext.Response.Cookies.Append("milk-cookies", token);
 
 			return Ok(token);
 		}
@@ -87,7 +87,7 @@ namespace CarWashes.Api.Controllers
 		[HttpGet]
 		public async Task<ActionResult<HumanResponse>> GetHumanByID()
 		{
-			var token = HttpContext.Request.Cookies["choco-cookies"];
+			var token = HttpContext.Request.Cookies["milk-cookies"];
 			var id = _jwtProvider.GetId(token);
 			var human = await _humansService.GetHumanById(id);
 			var respone = new HumanResponse(

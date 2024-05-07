@@ -2,7 +2,7 @@
 {
 	public class PostEntity
 	{
-		public int Id { get; set; }
+		public int? Id { get; set; }
 		public int CarWashId { get; set; }
 		public CarwashEntity? CarWash { get; set; }
 		public int InternalNumber { get; set; }

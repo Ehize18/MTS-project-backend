@@ -19,7 +19,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				.OrderBy(x => x.Id)
 				.ToListAsync();
 			var posts = postsEntities
-				.Select(x => new Post(x.Id, x.CarWashId, x.InternalNumber))
+				.Select(x => new Post((int)x.Id, x.CarWashId, x.InternalNumber))
 				.ToList();
 			return posts;
 		}
@@ -29,7 +29,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			var postEntity = await _dbContext.Posts
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Id == id);
-			var post = new Post(postEntity.Id, postEntity.CarWashId, postEntity.InternalNumber);
+			var post = new Post((int)postEntity.Id, postEntity.CarWashId, postEntity.InternalNumber);
 			return post;
 		}
 
@@ -40,7 +40,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				.Where(x => x.CarWashId == carwashId)
 				.ToListAsync();
 			var posts = postEntities
-				.Select(x => new Post(x.Id, x.CarWashId, x.InternalNumber))
+				.Select(x => new Post((int)x.Id, x.CarWashId, x.InternalNumber))
 				.ToList();
 			return posts;
 		}

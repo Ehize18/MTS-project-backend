@@ -2,6 +2,7 @@
 using CarWashes.Api.Contracts.Clients;
 using CarWashes.Core.Interfaces;
 using CarWashes.Core.Models;
+using CarWashes.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,7 @@ namespace CarWashes.Api.Controllers
 			var user = new User(
 				null, null,
 				"client",
-				Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password),
+				Helper.SHA256Hash(request.login), Helper.SHA256Hash(request.password),
 				null);
 			var registerResult = await _humansService.AddHumanWithUser(human, user);
 			if (registerResult.IsFailure)
@@ -59,7 +60,7 @@ namespace CarWashes.Api.Controllers
 		[HttpPost]
 		public async Task<ActionResult> Login(ClientsLoginRequest request)
 		{
-			var result = await _usersService.Login(Hash.SHA256Hash(request.login), Hash.SHA256Hash(request.password));
+			var result = await _usersService.Login(Helper.SHA256Hash(request.login), Helper.SHA256Hash(request.password));
 			if (result.IsFailure)
 			{
 				return BadRequest(result.Error);

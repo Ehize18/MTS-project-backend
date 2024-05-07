@@ -6,6 +6,7 @@ using CarWashes.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CSharpFunctionalExtensions;
+using CarWashes.Infrastructure;
 
 namespace CarWashes.Api.Controllers
 {
@@ -30,10 +31,10 @@ namespace CarWashes.Api.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> AddCarwash([FromBody] CarwashesRequest request)
+		public async Task<ActionResult> AddCarwash([FromBody] CarwashesCreateRequest request)
 		{
-			var token = HttpContext.Request.Cookies["choco-cookies"];
-			var adminResult = await GetAdminByToken(token);
+			var token = HttpContext.Request.Cookies["milk-cookies"];
+			var adminResult = await Helper.GetAdminByToken(token, _jwtProvider, _usersService);
 			if (adminResult.IsFailure)
 			{
 				return BadRequest(adminResult.Error);
@@ -50,51 +51,37 @@ namespace CarWashes.Api.Controllers
 			return Ok();
 		}
 
-		[Route("addstaff")]
-		[Authorize]
-		[HttpPost]
-		public async Task<ActionResult> AddStaff([FromBody] CarwashesAddStaffRequest request)
+		[HttpGet]
+		public async Task<ActionResult<List<CarwashesResponse>>> GetAllCarwashes()
 		{
-			var token = HttpContext.Request.Cookies["choco-cookies"];
-			var adminResult = await GetAdminByToken(token);
-			if (adminResult.IsFailure)
-			{
-				return BadRequest(adminResult.Error);
-			}
-			var admin = adminResult.Value;
-			var humanResult = await _humansService.GetHumanByPhone(request.staffPhone);
-			if (humanResult.IsFailure)
-			{
-				return BadRequest("Сотрудник не найден");
-			}
-			var newStaffResult = await _usersService.GetAdminByHumanId((int)humanResult.Value.Id);
-			if (newStaffResult.IsFailure)
-			{
-				return BadRequest(newStaffResult.Error);
-			}
-			var carwash = await _carwashesService.GetCarwashById(request.carwashId);
-			await _carwashesService.AddStaff(carwash, newStaffResult.Value);
-			return Ok();
+			var carwashes = await _carwashesService.GetAllCarwashes();
+			var carwashesResponse = carwashes.Select(x => new CarwashesResponse(
+				(int)x.Id,
+				x.OrgName, x.Name,
+				x.City, x.Address,
+				x.Phone, x.Email,
+				x.WorkTimeStart, x.WorkTimeEnd
+				)).ToList();
+			return Ok(carwashesResponse);
 		}
 
-		private async Task<Result<User>> GetAdminByToken(string token)
+		[HttpGet("{id:int}")]
+		public async Task<ActionResult<CarwashesResponse>> GetCarwashById(int id)
 		{
-			if (token == null)
+			var carwashResult = await _carwashesService.GetCarwashById(id);
+			if (carwashResult.IsFailure)
 			{
-				return Result.Failure<User>("Ошибка авторизации");
+				return NotFound(id);
 			}
-			var id = _jwtProvider.GetId(token);
-			if (_jwtProvider.GetRole(token) != "admin")
-			{
-				Console.WriteLine(_jwtProvider.GetRole(token));
-				return Result.Failure<User>("Ошибка авторизации");
-			}
-			var userResult = await _usersService.GetUserById(id);
-			if (userResult.IsFailure)
-			{
-				return Result.Failure<User>("Ошибка авторизации");
-			}
-			return Result.Success<User>(userResult.Value);
+			var carwash = carwashResult.Value;
+			var carwashResponse = new CarwashesResponse(
+				(int)carwash.Id,
+				carwash.OrgName, carwash.Name,
+				carwash.City, carwash.Address,
+				carwash.Phone, carwash.Email,
+				carwash.WorkTimeStart, carwash.WorkTimeEnd
+				);
+			return Ok(carwashResponse);
 		}
 	}
 }
