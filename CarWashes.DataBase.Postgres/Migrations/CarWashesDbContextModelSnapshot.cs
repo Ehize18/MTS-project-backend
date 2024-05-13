@@ -33,7 +33,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("CanceledOrders");
+                    b.ToTable("CanceledOrders", (string)null);
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.CarwashEntity", b =>
@@ -79,7 +79,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carwashes");
+                    b.ToTable("Carwashes", (string)null);
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.HumanEntity", b =>
@@ -121,7 +121,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     b.HasIndex("Email", "Phone")
                         .IsUnique();
 
-                    b.ToTable("Humans");
+                    b.ToTable("Humans", (string)null);
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.OrderEntity", b =>
@@ -174,7 +174,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.PostEntity", b =>
@@ -195,7 +195,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("CarWashId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.ServiceEntity", b =>
@@ -224,7 +224,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("CarwashId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.UserEntity", b =>
@@ -261,7 +261,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     b.HasIndex("Login")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("CarwashEntityUserEntity", b =>
@@ -276,7 +276,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("CarwashEntityUserEntity");
+                    b.ToTable("CarwashEntityUserEntity", (string)null);
                 });
 
             modelBuilder.Entity("OrderEntityServiceEntity", b =>
@@ -291,7 +291,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("ServicesId");
 
-                    b.ToTable("OrderEntityServiceEntity");
+                    b.ToTable("OrderEntityServiceEntity", (string)null);
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.CanceledOrderEntity", b =>

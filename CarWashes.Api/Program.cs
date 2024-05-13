@@ -12,8 +12,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+configuration.AddJsonFile("appsettings.json");
 
+builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -56,8 +57,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	});
 builder.Services.AddAuthorization();
 
-var app = builder.Build();
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+	using (var DbContext = scope.ServiceProvider.GetRequiredService<CarWashesDbContext>())
+	{
+		if (DbContext.Database.GetPendingMigrations().Any())
+		{
+			DbContext.Database.Migrate();
+		}
+	}
+}
 
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

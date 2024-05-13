@@ -37,6 +37,12 @@ namespace CarWashes.Api.Controllers
 				return BadRequest(adminResult.Error);
 			}
 			var admin = adminResult.Value;
+			var ownerResult = await _carwashesService.GetOwner(id);
+			var owner = ownerResult.Value;
+			if (admin.Id != owner.Id)
+			{
+				return BadRequest("Вы не владелец автомойки");
+			}
 			var humanResult = await _humansService.GetHumanByPhone(request.staffPhone);
 			if (humanResult.IsFailure)
 			{

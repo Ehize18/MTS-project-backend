@@ -24,7 +24,6 @@ namespace CarWashes.DataBase.Postgres
 			modelBuilder.ApplyConfiguration(new PostConfiguration());
 			modelBuilder.ApplyConfiguration(new CanceledOrderConfiguration());
 			modelBuilder.ApplyConfiguration(new CarwashConfiguration());
-
 			base.OnModelCreating(modelBuilder);
 		}
 	}
