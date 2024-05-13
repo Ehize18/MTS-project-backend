@@ -2,7 +2,7 @@
 {
 	public class Order
 	{
-		public int Id { get; }
+		public int? Id { get; }
 		public int UserId { get; }
 		public int PostId { get; }
 
@@ -17,7 +17,7 @@
 		public DateTime? UpdatedAt { get; }
 
 		public Order(
-			int id, int userId, int postId,
+			int? id, int userId, int postId,
 			string plateNumber, string carBrand, string carModel, int carReleaseYear,
 			DateTime orderTime, DateTime createdAt, DateTime? updatedAt)
 		{

@@ -1,10 +1,12 @@
-﻿using CarWashes.Core.Models;
+﻿using CarWashes.Core.Interfaces;
+using CarWashes.Core.Models;
 using CarWashes.DataBase.Postgres.Models;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarWashes.DataBase.Postgres.Repositories
 {
-	public class ServicesRepository
+	public class ServicesRepository : IServicesRepository
 	{
 		private readonly CarWashesDbContext _dbContext;
 		public ServicesRepository(CarWashesDbContext dbContext)
@@ -26,15 +28,19 @@ namespace CarWashes.DataBase.Postgres.Repositories
 			return services;
 		}
 
-		public async Task<Service> GetById(int id)
+		public async Task<Result<Service>> GetById(int id)
 		{
 			var serviceEntity = await _dbContext.Services
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Id == id);
+			if (serviceEntity == null)
+			{
+				return Result.Failure<Service>("Услуга не найдена");
+			}
 			var service = new Service(
 				serviceEntity.Id, serviceEntity.CarwashId,
 				serviceEntity.Name, serviceEntity.Price, serviceEntity.Duration);
-			return service;
+			return Result.Success(service);
 		}
 
 		public async Task<List<Service>> GetByCarwashId(int carwashId)
