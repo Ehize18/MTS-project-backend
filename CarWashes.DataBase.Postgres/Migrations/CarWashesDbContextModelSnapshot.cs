@@ -33,7 +33,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("CanceledOrders", (string)null);
+                    b.ToTable("CanceledOrders");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.CarwashEntity", b =>
@@ -71,15 +71,15 @@ namespace CarWashes.DataBase.Postgres.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("character varying(11)");
 
-                    b.Property<TimeOnly>("WorkTimeEnd")
-                        .HasColumnType("time without time zone");
+                    b.Property<DateTimeOffset>("WorkTimeEnd")
+                        .HasColumnType("timetz");
 
-                    b.Property<TimeOnly>("WorkTimeStart")
-                        .HasColumnType("time without time zone");
+                    b.Property<DateTimeOffset>("WorkTimeStart")
+                        .HasColumnType("timetz");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carwashes", (string)null);
+                    b.ToTable("Carwashes");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.HumanEntity", b =>
@@ -121,16 +121,16 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     b.HasIndex("Email", "Phone")
                         .IsUnique();
 
-                    b.ToTable("Humans", (string)null);
+                    b.ToTable("Humans");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.OrderEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<string>("CarBrand")
                         .IsRequired()
@@ -162,7 +162,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("UserId")
@@ -174,16 +174,16 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.PostEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<int>("CarWashId")
                         .HasColumnType("integer");
@@ -195,16 +195,16 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("CarWashId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.ServiceEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<int>("CarwashId")
                         .HasColumnType("integer");
@@ -224,7 +224,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("CarwashId");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.UserEntity", b =>
@@ -261,7 +261,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     b.HasIndex("Login")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CarwashEntityUserEntity", b =>
@@ -276,7 +276,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("CarwashEntityUserEntity", (string)null);
+                    b.ToTable("CarwashEntityUserEntity");
                 });
 
             modelBuilder.Entity("OrderEntityServiceEntity", b =>
@@ -291,7 +291,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
                     b.HasIndex("ServicesId");
 
-                    b.ToTable("OrderEntityServiceEntity", (string)null);
+                    b.ToTable("OrderEntityServiceEntity");
                 });
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.CanceledOrderEntity", b =>

@@ -9,8 +9,8 @@
 		public string Address { get; set; } = string.Empty;
 		public string Phone { get; set; } = string.Empty;
 		public string Email { get; set; } = string.Empty;
-		public TimeOnly WorkTimeStart { get; set; }
-		public TimeOnly WorkTimeEnd { get; set; }
+		public DateTimeOffset WorkTimeStart { get; set; }
+		public DateTimeOffset WorkTimeEnd { get; set; }
 
 		public List<UserEntity> Staff { get; set; } = [];
 		public List<PostEntity> Posts { get; set; } = [];

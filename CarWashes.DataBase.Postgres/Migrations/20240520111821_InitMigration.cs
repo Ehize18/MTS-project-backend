@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWashes.DataBase.Postgres.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,8 +24,8 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     Address = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     Phone = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    WorkTimeStart = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
-                    WorkTimeEnd = table.Column<TimeOnly>(type: "time without time zone", nullable: false)
+                    WorkTimeStart = table.Column<DateTimeOffset>(type: "timetz", nullable: false),
+                    WorkTimeEnd = table.Column<DateTimeOffset>(type: "timetz", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,7 +153,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     Status = table.Column<int>(type: "integer", nullable: false),
                     OrderTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

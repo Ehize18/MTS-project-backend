@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWashes.DataBase.Postgres.Migrations
 {
     [DbContext(typeof(CarWashesDbContext))]
-    [Migration("20240506112039_init")]
-    partial class init
+    [Migration("20240520111821_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,11 +74,11 @@ namespace CarWashes.DataBase.Postgres.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("character varying(11)");
 
-                    b.Property<TimeOnly>("WorkTimeEnd")
-                        .HasColumnType("time without time zone");
+                    b.Property<DateTimeOffset>("WorkTimeEnd")
+                        .HasColumnType("timetz");
 
-                    b.Property<TimeOnly>("WorkTimeStart")
-                        .HasColumnType("time without time zone");
+                    b.Property<DateTimeOffset>("WorkTimeStart")
+                        .HasColumnType("timetz");
 
                     b.HasKey("Id");
 
@@ -129,11 +129,11 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.OrderEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<string>("CarBrand")
                         .IsRequired()
@@ -165,7 +165,7 @@ namespace CarWashes.DataBase.Postgres.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("UserId")
@@ -182,11 +182,11 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.PostEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<int>("CarWashId")
                         .HasColumnType("integer");
@@ -203,11 +203,11 @@ namespace CarWashes.DataBase.Postgres.Migrations
 
             modelBuilder.Entity("CarWashes.DataBase.Postgres.Models.ServiceEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<int>("CarwashId")
                         .HasColumnType("integer");

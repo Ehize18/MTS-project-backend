@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 configuration.AddJsonFile("appsettings.json");
+configuration.AddJsonFile("appsettings.Development.json");
 
 builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 // Add services to the container.

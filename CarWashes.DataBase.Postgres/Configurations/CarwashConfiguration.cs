@@ -26,6 +26,9 @@ namespace CarWashes.DataBase.Postgres.Configurations
 			builder.Property(x => x.City).HasMaxLength(25);
 			builder.Property(x => x.Address).HasMaxLength(30);
 			builder.Property(x => x.Phone).HasMaxLength(11);
+
+			builder.Property(x => x.WorkTimeStart).HasColumnType("timetz");
+			builder.Property(x => x.WorkTimeEnd).HasColumnType("timetz");
 		}
 	}
 }

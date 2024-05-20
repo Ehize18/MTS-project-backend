@@ -26,7 +26,8 @@ namespace CarWashes.DataBase.Postgres.Repositories
 					x.OrgName, x.Name,
 					x.City, x.Address,
 					x.Phone, x.Email,
-					x.WorkTimeStart, x.WorkTimeEnd))
+					TimeOnly.FromDateTime(x.WorkTimeStart.UtcDateTime),
+					TimeOnly.FromDateTime(x.WorkTimeEnd.UtcDateTime)))
 				.ToList();
 			return carwashes;
 		}
@@ -45,7 +46,8 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				carwashEntity.OrgName, carwashEntity.Name,
 				carwashEntity.City, carwashEntity.Address,
 				carwashEntity.Phone, carwashEntity.Email,
-				carwashEntity.WorkTimeStart, carwashEntity.WorkTimeEnd);
+				TimeOnly.FromDateTime(carwashEntity.WorkTimeStart.UtcDateTime),
+				TimeOnly.FromDateTime(carwashEntity.WorkTimeEnd.UtcDateTime));
 			return Result.Success<Carwash>(carwash);
 		}
 
@@ -60,8 +62,8 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				Address = carwash.Address,
 				Phone = carwash.Phone,
 				Email = carwash.Email,
-				WorkTimeStart = carwash.WorkTimeStart,
-				WorkTimeEnd = carwash.WorkTimeEnd
+				WorkTimeStart = new DateTime(DateOnly.MinValue, carwash.WorkTimeStart, DateTimeKind.Utc),
+				WorkTimeEnd = new DateTime(DateOnly.MinValue, carwash.WorkTimeEnd, DateTimeKind.Utc)
 			};
 			var userEntity = await _dbContext.Users
 				.AsNoTracking()
@@ -82,9 +84,7 @@ namespace CarWashes.DataBase.Postgres.Repositories
 				.Where(x => x.Id == id)
 				.ExecuteUpdateAsync(s => s
 					.SetProperty(x => x.Phone, x => phone)
-					.SetProperty(x => x.Email, x => email)
-					.SetProperty(x => x.WorkTimeStart, x => workTimeStart)
-					.SetProperty(x => x.WorkTimeEnd, x => workTimeEnd));
+					.SetProperty(x => x.Email, x => email));
 		}
 
 		public async Task AddStaff(Carwash carwash, User user)
